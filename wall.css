@@ -1,0 +1,168 @@
+ 
+ 
+body{ 
+background-color: lightgrey; 
+} 
+ 
+ 
+.brand-logo{ 
+margin-left: 10px; 
+font-family: Bree serif 
+ 
+ 
+} 
+#navBar{ 
+ 
+ 
+width: 100%; 
+height: 10%; 
+padding-bottom: 20px; 
+padding-left: 20px; 
+font-family: 'Montserrat', sans-serif; 
+ 
+ 
+} 
+ 
+ 
+nav{ 
+position: fixed; 
+z-index: 1; 
+top: 0%; 
+} 
+ 
+ 
+ 
+ 
+.homepage{ 
+ 
+ 
+text-decoration: none; 
+font-size: 1.25em; 
+font-size: 1.7em; 
+color: darkgrey; 
+ 
+ 
+} 
+ 
+ 
+h1{ 
+font-family: 'Montserrat', sans-serif; 
+color: dimgray; 
+} 
+ 
+ 
+ 
+ 
+ 
+ 
+.addNote{ 
+ 
+ 
+position: fixed; 
+top: 10%; 
+margin-left: 20px; 
+ 
+ 
+} 
+ 
+ 
+ 
+ 
+.note{ 
+ 
+ 
+min-height:80px; 
+ 
+ 
+position:relative; 
+margin-left: 5%; 
+margin-right: 5%; 
+ 
+ 
+margin-bottom: 20px; 
+} 
+ 
+ 
+#note1{background-color: #64ffda;} 
+#note2{background-color: #18ffff;} 
+#note3{background-color: #80deea;} 
+#note4{background-color: #81d4fa;} 
+#note5{background-color: #18ffff;} 
+ 
+ 
+ 
+ 
+ 
+ 
+.edit{ 
+position: absolute; 
+top: 2%; 
+right: 4%; 
+} 
+.delete{ 
+position: absolute; 
+top: 2%; 
+right: .5%; 
+} 
+.button{ 
+ background-color: grey; 
+ border: none; 
+} 
+ 
+ 
+ 
+ 
+.edit:before{ 
+content: "\2714";   
+} 
+.delete:before 
+  { 
+   content: "\2718";         
+ } 
+  
+ .hidden{visibility: hidden;} 
+.color{ 
+display: inline-block; 
+width: 30px; 
+height: 30px; 
+margin-left: 10px; 
+} 
+ 
+ 
+ 
+ 
+#color1{background-color: #fff176;} 
+#color2{background-color: #ffd54f;} 
+#color3{background-color: #ffb74d;} 
+#color4{background-color: #80deea;} 
+#color5{background-color: #b39ddb;} 
+#color6{background-color: #a0f658;} 
+#color7{background-color: #f64d42;} 
+ 
+ 
+.colorBorder{border: 1px solid black;} 
+/*button css*/ 
+ 
+ 
+.gray { 
+    background: none repeat scroll 0 0 #AAAAAA; 
+} 
+ 
+ 
+.message{ 
+width: 100%; 
+height: 100% 
+margin: 0 auto; 
+text-align: center; 
+} 
+ 
+ 
+ 
+ 
+.note .changes { 
+    visibility: hidden; 
+} 
+.note:hover .changes { 
+visibility: visible; 
+} 
+ 
