@@ -1,0 +1,25 @@
+h1 {font-family: sans-serif;
+    font-size: 60px;
+    color:dimgray;
+background-color: #ff5252; 
+padding: 200px;
+}
+h4  {font-family: sans-serif;
+    font-size: 100;
+}
+body {background-color: lightgrey;
+}
+search { font-family: sans-serif;
+        color:dimgray;
+    font-size: 72;
+}
+p {font-family: sans-serif;
+    font-size: 50px;
+    color: darkgrey;
+}
+input { padding: 15px;
+}
+center.Wall {font-size: 3em;
+    color:darkgrey;
+    font-family: Bree serif;} 
+div.col s12 { color:#f44336;}
