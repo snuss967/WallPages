@@ -13,14 +13,84 @@
             <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
             <title> WALL </title>
 			<meta name= "viewport" content= "width=device-width initial-scale= 1.0">
+
+      <script type="text/javascript">
+          function getWall()
+          {
+            var searchBar = document.getElementById("search");
+            var wallName = searchBar.value;
+            console.log(wallName);
+            var getURL = ('http://localhost:9997/walls/'+ wallName);
+            $.ajax({
+                url: getURL,
+                dataType: "json",
+                type: "GET",
+                contentType: 'application/json; charset=utf-8',
+            //states that we expect to recieve JSON
+                async: true,
+                processData: false,
+                cache: false,
+                //these need to be changed to suit our functionality
+                success: function (data) {
+                  console.log("here");
+                    if(data == null)
+                    {
+                      console.log(wallName);  
+                      makeNewWall(wallName);
+                    }
+                    else
+                    {
+                      setCookie("WallName", wallName, .01)
+                      window.location = "wall.html";
+                    }
+
+                },
+                error: function (xhr) {
+                    alert('error');
+                }
+            });
+          }
+          function makeNewWall(wallName)
+          {
+              var wall = {wall_name: wallName};
+              var JSONstring = JSON.stringify(wall);
+                $.ajax({
+                  url: 'http://localhost:9997/walls',
+                  dataType: "json",
+                  type: "POST",
+                  contentType: 'application/json; charset=utf-8',
+                  data: JSONstring,
+                  async: true,
+                  processData: false,
+                  cache: false,
+              //modify to suit our functionality would not be a bad idea to have success call the function that creates the note on the screen
+                  success: function (data) {
+                      console.log(data);
+                      setCookie("WallName", wallName, .05);
+                  },
+              //can have error then put a popup up that will tell us that the note failed to create
+                  error: function (xhr) {
+                      alert('error');
+                  }
+              }) 
+          }
+          function setCookie(cname, cvalue, exdays) {
+           var d = new Date();
+           d.setTime(d.getTime() + (exdays*24*60*60*1000));
+          var expires = "expires="+d.toUTCString();
+          document.cookie = cname + "=" + cvalue + "; " + expires;
+          alert("Cookie Set");
+        }
+      </script>
 		</head>
 		<body>
             <!--Import jQuery before materialize.js-->
       <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
       <script type="text/javascript" src="js/materialize.min.js"></script>
- 	<script type="text/javascript" src="loadpage.js"></script>           
+ 	<script type="text/javascript" src="loadpage.js"></script>
+       
             <div class="row">
-                
+                <div id="demo"></div>
                 <div class="col s12">
                     <h1> 
                         <center class="Wall"> WALL </center> </h1>
@@ -34,7 +104,7 @@
                     <form>
                         <div class="input-field">
                           <input id="search" type="search" required size="50">
-                          <label for="search"><i class="material-icons">search</i></label>
+                          <button type="button" onclick ="getWall()">Click Me</button>
                         </div>
                       </form>
                 </div>
