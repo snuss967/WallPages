@@ -14,120 +14,177 @@
 <!--Import Google Icon Font--> 
 <link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"> 
 <!--Import materialize.css--> 
-<link type="text/css" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.5/css/materialize.min.css"  media="screen,projection"/> 
+<link type="text/css" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.5/css/materialize.min.css"  media="screen,projection"/>
 <script>
  var notesList;
 var i = 1;
 var j = 1;
 var wallName;
+
 function setPage()
 {
     wallName = getCookie("WallName");
-    console.log(wallName);
     var title = document.getElementById("pagetitle");
     title.innerHTML = wallName;
     var topTitle = document.getElementById("pageTitle");
     topTitle.innerHTML = wallName;
     var urlName = 'http://localhost:9997/notes/' + wallName;
-    
+    $.ajax({
+        url: urlName,
+        dataType: "json",
+        type: 'GET',
+        contentType: 'application/json; charset=utf-8',
+    //states that we expect to recieve JSON
+        async: true,
+        processData: false,
+        cache: false,
+        //these need to be changed to suit our functionality
+        success: function (data) {
+            var keyArray;
+            for(var key in data)
+            {
+                keyArray = key;
+            }
+            var array = data[keyArray];
+            for (var i = 0; i < array.length; i++) {
+                var message = array[i].message;
+                var color = array[i].color;
+                console.log(color);
+                newNote(message, false, color, false);
 
-    console.log(urlName);
-	$.ajax({
-    url: urlName,
-    dataType: "json",
-    type: 'GET',
-    contentType: 'application/json; charset=utf-8',
-//states that we expect to recieve JSON
-    async: true,
-    processData: false,
-    cache: false,
-    //these need to be changed to suit our functionality
-    success: function (data) {
-    	console.log(data);
-    	var keyArray;
-    	for(var key in data)
-    	{
-    		keyArray = key;
-    	}
-    	var array = data[keyArray];
-    	console.log(array);
-    	for (var i = 0; i < array.length; i++) {
-    		var message = array[i].message;
-            var color = array[i].color;
-    		newNote(message, false, color, false);
-
-    	}
-    	notesList = array;
-    },
-    error: function (xhr) {
-        alert('error');
-    }
-});
-
+            }
+            notesList = array;
+        },
+        error: function (xhr) {
+            
+        }
+    });
 }
+
+
+function getCookie(cname) {
+    var name = cname + "=";
+    var ca = document.cookie.split(';');
+    for(var i=0; i<ca.length; i++) {
+        var c = ca[i];
+        while (c.charAt(0)==' ') c = c.substring(1);
+        if (c.indexOf(name) == 0) return c.substring(name.length,c.length);
+     }
+     return "";
+}
+
 function newNote(text, newNote, differentColor, DynamicColor) {
+    var colorID;
     if(DynamicColor)
     {
         var colorBox = document.getElementById("colorareacontent");
         var colorNumber = colorBox.value;
         switch(colorNumber) {
-         case 1:
+         case "1":
+            colorID = "color1";
+            break;
+         case "2":
+            colorID = "color2";
+            break;
+        case "3":
+            colorID = "color3";
+            break;
+        case "4":
+            colorID = "color4";
+            break;
+        case "5":
+            colorID = "color5";
+            break;
+        case "6":
+            colorID = "color6";
+            break;
+        case "7":
+            colorID = "color7";
+            break;
+         default:
+             colorID = "color4";
+             break;
+        }
+    } 
+    else
+    {
+        switch(differentColor) {
+         case "fff176":
+            colorID = "color1";
+            break;
+         case "ffd54f":
+            colorID = "color2";
+            break;
+        case "ffb74d":
+            colorID = "color3";
+            break;
+        case "80deea":
+            colorID = "color4";
+            break;
+        case "b39ddb":
+            colorID = "color5";
+            break;
+        case "a0f658":
+            colorID = "color6";
+            break;
+        case "f64d42":
+            colorID = "color7";
+            break;
+         default:
+             colorID = "color4";
+             break;
+        }
+    }
+    var table = document.getElementById("myTable");
+    var original = document.getElementById("0");
+    var clone = original.cloneNode(true);
+    clone.id = j;
+    var child1 = clone.firstElementChild;
+ 	var child2 = clone.firstElementChild;
+    child2.id = colorID;
+ 	var child3 = child2.children;
+ 	var child4 = child3[1];
+ 	var child5 = child4.firstElementChild;
+ 	child5.innerHTML = text;
+    var child6 = child4.children;
+    var child7 = child6[1];
+    var row = table.insertRow(i);
+    row.id = j;
+    j++;
+    i++;
+    var cell1 = row.insertCell(0);
+    cell1.parentNode.appendChild(clone);
+    if (newNote) {
+    	var generatedTimestamp = (Date.now() / 1000);
+        switch(colorNumber) {
+         case "1":
             color = "fff176";
             break;
-         case 2:
+         case "2":
             color = "ffd54f";
             break;
-        case 3:
+        case "3":
             color = "ffb74d";
             break;
-        case 4:
+        case "4":
             color = "80deea";
             break;
-        case 5:
+        case "5":
             color = "b39ddb";
             break;
-        case 6:
+        case "6":
             color = "a0f658";
             break;
-        case 7:
+        case "7":
             color = "f64d42";
             break;
          default:
              color = "80deea";
              break;
-        }
-    } 
-    else
-        color = differentColor;
-    var table = document.getElementById("myTable");
-    var original = document.getElementById("0");
-    var clone = original.cloneNode(true);
-    clone.id = j;
-    console.log(clone.id);
-    clone.style.backgroundColor = color;
-    var child1 = clone.firstElementChild;
-    child1.style.backgroundColor = color;
- 	var child2 = clone.firstElementChild;
-    child2.style.backgroundColor = color;
- 	var child3 = child2.children;
- 	var child4 = child3[1];
-    child4.style.backgroundColor = color;
- 	var child5 = child4.firstElementChild;
-    child5.style.backgroundColor = color;
- 	child5.innerHTML = text;
-    var row = table.insertRow(i);
-    row.id = j;
-    j++;
-    i++;
-    console.log(row.id);
-    var cell1 = row.insertCell(0);
-    cell1.parentNode.appendChild(clone);
-    if (newNote) {
-    	var generatedTimestamp = (Date.now() / 1000);  
-    	var newNoteObject = {message:text, wallName:wallName, color:"eeeeee", timestamp:generatedTimestamp}
-    	console.log(newNoteObject);
+         }
+    	var newNoteObject = {message:text, wallName:wallName, color:color}
+        console.log(newNoteObject);
     	var jsonString = JSON.stringify(newNoteObject);
-    	console.log(jsonString);
     	$.ajax({
 	    url: 'http://localhost:9997/notes',
 	    dataType: "json",
@@ -138,13 +195,22 @@ function newNote(text, newNote, differentColor, DynamicColor) {
 	    processData: false,
 	    cache: false,
 	    success: function (data) {
-	        alert(data);
+	        
 	    },
 	    error: function (xhr) {
 	    }
-	}) 
+	}); 
 
     }
+}
+
+function convertEpochToDate(seconds)
+{
+    var utcSeconds = seconds;
+    var d = new Date(0); // The 0 there is the key, which sets the date to the epoch
+    d.setUTCSeconds(utcSeconds);
+    console.log(d);
+    return d;
 }
 
 function getParentFromActionButton(event)
@@ -208,17 +274,6 @@ Array.prototype.remove = function(from, to) {
   return this.push.apply(this, rest);
 };
 
-    function getCookie(cname) {
-     var name = cname + "=";
-     var ca = document.cookie.split(';');
-     for(var i=0; i<ca.length; i++) {
-         var c = ca[i];
-        while (c.charAt(0)==' ') c = c.substring(1);
-         if (c.indexOf(name) == 0) return c.substring(name.length,c.length);
-     }
-     return "";
-}
-
 function deleteRow(event)
 {
 	var parent = getParentFromActionButton(event);
@@ -274,13 +329,14 @@ function deleteRow(event)
 <tr id = "0">
   <div class="row"> 
 <div class="col s8 offset-s2" id="0"> 
-<div class="card-panel hoverable" id="note1"> 
+<div class="note card-panel hoverable" id="note4"> 
  <div class="changes"> 
  <button class = "edit gray button" onclick="editText(this)"></button> 
  <button class = "delete gray button" onclick="deleteRow(this)"></button> 
  </div>   
  <div class ="message"> 
   <p>Instructions: Click The Plus Sign To Create A Note. Click The Check To Edit A Note. Click The X To Delete A Note</p> 
+ <div style="font-size: .75em"></div>
  </div> 
 </div> 
 </div>
@@ -307,7 +363,7 @@ Choose note color: <br>
 <div id="color7" class="color"><input type="radio" name="color"><p class='hidden'>secret</p>7</div> 
 </div>
 <textarea id="colorareacontent"></textarea>
-<center>Enter The Number of The Color You Want</center> 
+<center>Enter The Number of The Color You Want (1-7 Anything Else You'll Get Blue)</center> 
 <div class="modal-footer"> 
 <div id ="submit" class="modal-close waves-effect waves-green btn-flat">Submit</div> 
 </div>
