@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html>
-	<html>
-		<head>
+  <html>
+    <head>
+
             <link href='https://fonts.googleapis.com/css?family=Montserrat' rel='stylesheet' type='text/css'>
-			<link rel="stylesheet" type="text/css" href="walls.css">
+      <link rel="stylesheet" type="text/css" href="walls.css">
             <!--Import Google Icon Font-->
       <link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
       <!--Import materialize.css-->
@@ -12,8 +13,20 @@
       <!--Let browser know website is optimized for mobile-->
             <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
             <title> WALL </title>
-			<meta name= "viewport" content= "width=device-width initial-scale= 1.0">
+      <meta name= "viewport" content= "width=device-width initial-scale= 1.0">
+      <script type="text/javascript">
+      var messages = ["I Love Wall", "Wall Is The Best Thing in The World!", "Wall Has Made My Life So Much Easier", "Where has Wall Been!", "Why Hadn't This Been Thought Of", "Best Project Here","The Wall Development Team = The Greatest", "Go Huskers!", "Zach Merrill is The Man", "Whose Idea Was This!", "Wall Needs A Mobile App NOW!"];
+      var i = 0;
 
+      function cycleMessages()
+      {
+        var slogan = document.getElementById("tagline");
+        var randomnumber=Math.floor(Math.random()*11);
+        slogan.innerHTML = messages[randomnumber];
+
+          
+        }
+        </script>
       <script type="text/javascript">
           function getWall()
           {
@@ -35,8 +48,9 @@
                   console.log("here");
                     if(data == null)
                     {
-                      console.log(wallName);  
-                      makeNewWall(wallName);
+                      var makeNewWallPrompt = confirm ("Do You Want to Make a New " + wallName + " Wall");
+                      if (makeNewWallPrompt) {makeNewWall(wallName);}
+                      
                     }
                     else
                     {
@@ -65,12 +79,12 @@
                   cache: false,
               //modify to suit our functionality would not be a bad idea to have success call the function that creates the note on the screen
                   success: function (data) {
-                      console.log(data);
-                      setCookie("WallName", wallName, .05);
+                      setCookie("WallName", wallName, .01)
+                      window.location = "wall.html";
                   },
               //can have error then put a popup up that will tell us that the note failed to create
                   error: function (xhr) {
-                      alert('error');
+                    location.reload();
                   }
               }) 
           }
@@ -79,15 +93,14 @@
            d.setTime(d.getTime() + (exdays*24*60*60*1000));
           var expires = "expires="+d.toUTCString();
           document.cookie = cname + "=" + cvalue + "; " + expires;
-          alert("Cookie Set");
         }
       </script>
-		</head>
-		<body>
+    </head>
+    <body onload="cycleMessages()">
             <!--Import jQuery before materialize.js-->
       <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
       <script type="text/javascript" src="js/materialize.min.js"></script>
- 	<script type="text/javascript" src="loadpage.js"></script>
+  <script type="text/javascript" src="loadpage.js"></script>
        
             <div class="row">
                 <div id="demo"></div>
@@ -97,7 +110,7 @@
                 </div>
                 
                 <div class="col s6 offset-s3">
-                    <h4><center> "SLOGAN" </center></h4>
+                    <h4><center id="tagline"> "SLOGAN" </center></h4>
                 </div>
                 
                 <div class="col s6 offset-s3">
@@ -115,10 +128,9 @@
                 </div>
             </div>
             
-			
-			<br>
-				
-		</body>
-	</html>
-			
-			
+      
+      <br>
+        
+    </body>
+  </html>
+      
