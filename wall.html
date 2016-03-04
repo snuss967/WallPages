@@ -8,165 +8,309 @@
 --> 
 <head> 
 <link href='https://fonts.googleapis.com/css?family=Montserrat' rel='stylesheet' type='text/css'> 
-<title>Wall</title> 
+<title id="pageTitle"></title> 
 <meta name="viewport" content="width= device-width, initial-scale=1.0"> 
 <link rel="stylesheet" type="text/css" href="wall.css"> 
 <!--Import Google Icon Font--> 
 <link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"> 
 <!--Import materialize.css--> 
 <link type="text/css" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.5/css/materialize.min.css"  media="screen,projection"/> 
+<script>
+ var notesList;
+var i = 1;
+var j = 1;
+var wallName;
+function setPage()
+{
+    wallName = getCookie("WallName");
+    console.log(wallName);
+    var title = document.getElementById("pagetitle");
+    title.innerHTML = wallName;
+    var topTitle = document.getElementById("pageTitle");
+    topTitle.innerHTML = wallName;
+    var urlName = 'http://localhost:9997/notes/' + wallName;
+    
+
+    console.log(urlName);
+	$.ajax({
+    url: urlName,
+    dataType: "json",
+    type: 'GET',
+    contentType: 'application/json; charset=utf-8',
+//states that we expect to recieve JSON
+    async: true,
+    processData: false,
+    cache: false,
+    //these need to be changed to suit our functionality
+    success: function (data) {
+    	console.log(data);
+    	var keyArray;
+    	for(var key in data)
+    	{
+    		keyArray = key;
+    	}
+    	var array = data[keyArray];
+    	console.log(array);
+    	for (var i = 0; i < array.length; i++) {
+    		var message = array[i].message;
+            var color = array[i].color;
+    		newNote(message, false, color, false);
+
+    	}
+    	notesList = array;
+    },
+    error: function (xhr) {
+        alert('error');
+    }
+});
+
+}
+function newNote(text, newNote, differentColor, DynamicColor) {
+    if(DynamicColor)
+    {
+        var colorBox = document.getElementById("colorareacontent");
+        var colorNumber = colorBox.value;
+        switch(colorNumber) {
+         case 1:
+            color = "fff176";
+            break;
+         case 2:
+            color = "ffd54f";
+            break;
+        case 3:
+            color = "ffb74d";
+            break;
+        case 4:
+            color = "80deea";
+            break;
+        case 5:
+            color = "b39ddb";
+            break;
+        case 6:
+            color = "a0f658";
+            break;
+        case 7:
+            color = "f64d42";
+            break;
+         default:
+             color = "80deea";
+             break;
+        }
+    } 
+    else
+        color = differentColor;
+    var table = document.getElementById("myTable");
+    var original = document.getElementById("0");
+    var clone = original.cloneNode(true);
+    clone.id = j;
+    console.log(clone.id);
+    clone.style.backgroundColor = color;
+    var child1 = clone.firstElementChild;
+    child1.style.backgroundColor = color;
+ 	var child2 = clone.firstElementChild;
+    child2.style.backgroundColor = color;
+ 	var child3 = child2.children;
+ 	var child4 = child3[1];
+    child4.style.backgroundColor = color;
+ 	var child5 = child4.firstElementChild;
+    child5.style.backgroundColor = color;
+ 	child5.innerHTML = text;
+    var row = table.insertRow(i);
+    row.id = j;
+    j++;
+    i++;
+    console.log(row.id);
+    var cell1 = row.insertCell(0);
+    cell1.parentNode.appendChild(clone);
+    if (newNote) {
+    	var generatedTimestamp = (Date.now() / 1000);  
+    	var newNoteObject = {message:text, wallName:wallName, color:"eeeeee", timestamp:generatedTimestamp}
+    	console.log(newNoteObject);
+    	var jsonString = JSON.stringify(newNoteObject);
+    	console.log(jsonString);
+    	$.ajax({
+	    url: 'http://localhost:9997/notes',
+	    dataType: "json",
+	    type: "POST",
+	    contentType: 'application/json; charset=utf-8',
+	    data: jsonString,
+	    async: true,
+	    processData: false,
+	    cache: false,
+	    success: function (data) {
+	        alert(data);
+	    },
+	    error: function (xhr) {
+	    }
+	}) 
+
+    }
+}
+
+function getParentFromActionButton(event)
+{
+	var parent1 = event.parentNode;
+ 	var parent2 = parent1.parentNode;
+ 	var parent3 = parent2.parentNode;
+ 	return parent3;
+}
+
+function getNoteTextDivFromOuter(parent3)
+{
+	 var child2 = parent3.firstElementChild;
+	 var child3 = child2.children;
+	 var child4 = child3[1];
+	 var child5 = child4.firstElementChild;
+	 return child5;
+}
+
+function editText(event)
+{
+	var parent = getParentFromActionButton(event);
+	var id = parent.id;
+	var table = document.getElementById("myTable");
+	var tableRow = table.rows.namedItem(id);
+	var tableRowNumber = tableRow.rowIndex;
+	var note = notesList[tableRowNumber - 1];
+	var noteIDnumber = note.id;
+	var child5 = getNoteTextDivFromOuter(parent);
+	 var oldText = child5.innerHTML;
+	 var newText = prompt("Please Make Your Changes", oldText);
+	 child5.innerHTML = newText;
+	 note.message = newText;
+     JSONstring = JSON.stringify(note); 
+	 //PUT Request with note
+	 $.ajax({
+    url: 'http://localhost:9997/notes/' + noteIDnumber,
+    dataType: "json",
+    type: "PUT",
+    contentType: 'application/json; charset=utf-8',
+    data: JSONstring,
+    async: true,
+    processData: false,
+    cache: false,
+//need to change these to suit our functionality
+    success: function (data) {
+        alert(data);
+    },
+    error: function (xhr) {
+    }
+});
+}
+function logMessage()
+{
+	console.log(text);	
+}
+
+Array.prototype.remove = function(from, to) {
+  var rest = this.slice((to || from) + 1 || this.length);
+  this.length = from < 0 ? this.length + from : from;
+  return this.push.apply(this, rest);
+};
+
+    function getCookie(cname) {
+     var name = cname + "=";
+     var ca = document.cookie.split(';');
+     for(var i=0; i<ca.length; i++) {
+         var c = ca[i];
+        while (c.charAt(0)==' ') c = c.substring(1);
+         if (c.indexOf(name) == 0) return c.substring(name.length,c.length);
+     }
+     return "";
+}
+
+function deleteRow(event)
+{
+	var parent = getParentFromActionButton(event);
+	var id = parent.id;
+	var table = document.getElementById("myTable");
+	var tableRow = table.rows.namedItem(id);
+	var tableRowNumber = tableRow.rowIndex;
+	var note = notesList[tableRowNumber - 1];
+	var noteID = note.id;
+	notesList.remove(tableRowNumber - 1);
+	for (var i = 0; i < notesList.length; i++) {
+	}
+	table.deleteRow(tableRowNumber);
+	i--;
+	//DELETE with note 
+	$.ajax({
+    url: 'http://localhost:9997/notes/' + noteID,
+    dataType: "json",
+    type: "DELETE",
+    contentType: 'application/json; charset=utf-8',
+    async: true,
+    processData: false,
+    cache: false,
+//need to modify to suit our functionality
+    success: function (data) {
+        alert(data);
+    },
+    error: function (xhr) {
+       location.reload();
+    }
+});
+}
+</script>
 </head> 
-<body> 
+<body onload="setPage()"> 
 <header> 
 <nav> 
 <div class="nav-wrapper"> 
  <a href="index.html" class="brand-logo">WALL</a> 
 </div> 
  </nav> 
+ <script type="text/javascript">
+ </script>
+ 
 </header> 
    
   <br><br> 
-  <h1 align="center">GABI'S WALL</h1> 
+  <h1 id = "pagetitle" align="center">GABI'S WALL</h1> 
 <div class = "addNote"> 
 <a class="btn-floating btn-large waves-effect waves-light grey modal-trigger" href="#modal1"><i class="material-icons">add</i></a> 
-</div> 
-<div class="row"> 
-<div class="col s8 offset-s2"> 
-<div class="note card-panel hoverable" id="note1"> 
+</div>
+<table id="myTable">
+<tr id = "0">
+  <div class="row"> 
+<div class="col s8 offset-s2" id="0"> 
+<div class="card-panel hoverable" id="note1"> 
  <div class="changes"> 
- <button class = "edit gray button"></button> 
- <button class = "delete gray button"></button> 
+ <button class = "edit gray button" onclick="editText(this)"></button> 
+ <button class = "delete gray button" onclick="deleteRow(this)"></button> 
  </div>   
  <div class ="message"> 
-  <p>Mock Note</p> 
+  <p>Instructions: Click The Plus Sign To Create A Note. Click The Check To Edit A Note. Click The X To Delete A Note</p> 
  </div> 
 </div> 
-</div> 
-<div class="col s8 offset-s2"> 
-<div class="note card-panel hoverable" id="note2"> 
- <div class="changes"> 
- <button class = "edit gray button"></button> 
- <button class = "delete gray button"></button> 
- </div>   
+</div>
+</div>
+</tr>
+</table>
+
+</script>
  <div class ="message"> 
-  <p>Mock Note</p> 
- </div> 
-</div> 
-</div> 
- 
- 
-<div class="col s8 offset-s2"> 
-<div class="note card-panel hoverable" id="note3"> 
-      <div class="changes"> 
- <button class = "edit gray button"></button> 
- <button class = "delete gray button"></button> 
-      </div>   
- <div class ="message"> 
-  <p>Mock Note</p> 
- </div> 
-</div> 
-</div> 
-<div class="col s8 offset-s2"> 
-<div class="note card-panel hoverable" id="note4"> 
-      <div class="changes"> 
- <button class = "edit gray button"></button> 
- <button class = "delete gray button"></button> 
-      </div>   
- <div class ="message"> 
-  <p>Mock Note</p> 
- </div> 
-</div> 
-</div> 
-<div class="col s8 offset-s2"> 
-<div class="note card-panel hoverable" id="note5"> 
-      <div class="changes"> 
- <button class = "edit gray button"></button> 
- <button class = "delete gray button"></button> 
-      </div>   
- <div class ="message"> 
-  <p>Mock Note</p> 
- </div> 
-</div> 
-</div> 
-</div> 
-<div class="row"> 
-<div class="col s8 offset-s2"> 
-<div class="note card-panel hoverable" id="note1"> 
- <div class="changes"> 
- <button class = "edit gray button"></button> 
- <button class = "delete gray button"></button> 
- </div>   
- <div class ="message"> 
-  <p>Mock Note</p> 
- </div> 
-</div> 
-</div> 
-<div class="col s8 offset-s2"> 
-<div class="note card-panel hoverable" id="note2"> 
- <div class="changes"> 
- <button class = "edit gray button"></button> 
- <button class = "delete gray button"></button> 
- </div>   
- <div class ="message"> 
-  <p>Mock Note</p> 
- </div> 
-</div> 
-</div> 
- 
- 
-<div class="col s8 offset-s2"> 
-<div class="note card-panel hoverable" id="note3"> 
-      <div class="changes"> 
- <button class = "edit gray button"></button> 
- <button class = "delete gray button"></button> 
-      </div>   
- <div class ="message"> 
-  <p>Mock Note</p> 
- </div> 
-</div> 
-</div> 
-<div class="col s8 offset-s2"> 
-<div class="note card-panel hoverable" id="note4"> 
-      <div class="changes"> 
- <button class = "edit gray button"></button> 
- <button class = "delete gray button"></button> 
-      </div>   
- <div class ="message"> 
-  <p>Mock Note</p> 
- </div> 
-</div> 
-</div> 
-<div class="col s8 offset-s2"> 
-<div class="note card-panel hoverable" id="note5"> 
-      <div class="changes"> 
- <button class = "edit gray button"></button> 
- <button class = "delete gray button"></button> 
-      </div>   
- <div class ="message"> 
-  <p>Mock Note</p> 
- </div> 
-</div> 
-</div> 
-</div> 
 <div id="modal1" class="modal bottom-sheet"> 
 <div class="modal-content"> 
 <h4>Create Note</h4> 
 <form> 
 Message: <br> 
-<textarea cols="50" rows="10" name="content"></textarea> 
+<textarea id="textareacontent" cols="50" rows="10" name="content"></textarea> 
 Choose note color: <br> 
 <div id="colorChoice"> 
-<div id="color1" class="color"><input type="radio" name="color"><p class='hidden'>secret</p></div> 
-<div id="color2" class="color"><input type="radio" name="color"><p class='hidden'>secret</p></div> 
-<div id="color3" class="color"><input type="radio" name="color"><p class='hidden'>secret</p></div> 
-<div id="color4" class="color"><input type="radio" name="color"><p class='hidden'>secret</p></div> 
-<div id="color5" class="color"><input type="radio" name="color"><p class='hidden'>secret</p></div> 
-<div id="color6" class="color"><input type="radio" name="color"><p class='hidden'>secret</p></div> 
-<div id="color7" class="color"><input type="radio" name="color"><p class='hidden'>secret</p></div> 
-</div> 
+<div id="color1" class="color"><input type="radio" name="color"><p class='hidden'>secret</p>1</div> 
+<div id="color2" class="color"><input type="radio" name="color"><p class='hidden'>secret</p>2</div> 
+<div id="color3" class="color"><input type="radio" name="color"><p class='hidden'>secret</p>3</div> 
+<div id="color4" class="color"><input type="radio" name="color"><p class='hidden'>secret</p>4</div> 
+<div id="color5" class="color"><input type="radio" name="color"><p class='hidden'>secret</p>5</div> 
+<div id="color6" class="color"><input type="radio" name="color"><p class='hidden'>secret</p>6</div> 
+<div id="color7" class="color"><input type="radio" name="color"><p class='hidden'>secret</p>7</div> 
+</div>
+<textarea id="colorareacontent"></textarea>
+<center>Enter The Number of The Color You Want</center> 
 <div class="modal-footer"> 
-<a href="#!" class=" modal-action modal-close waves-effect waves-green btn-flat">Submit</a> 
-</div> 
+<div id ="submit" class="modal-close waves-effect waves-green btn-flat">Submit</div> 
+</div>
 </form> 
 </div> 
 </div> 
@@ -181,7 +325,18 @@ console.log(event);
 $(".color").removeClass("colorBorder"); 
 $(event.target).addClass("colorBorder"); 
 }); 
+
 </script> 
+<script type="text/javascript">
+	$("#submit").click(function()
+	{
+		var element = document.getElementById("textareacontent");
+ 		var text = element.value;
+ 		newNote(text, true, "blue", true);
+
+	})
+</script>
 </body> 
 </html> 
+ 
  
