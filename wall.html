@@ -184,6 +184,7 @@ function newNote(text, newNote, differentColor, DynamicColor) {
          }
     	var newNoteObject = {message:text, wallName:wallName, color:color}
         console.log(newNoteObject);
+        console.log(i);
     	var jsonString = JSON.stringify(newNoteObject);
     	$.ajax({
 	    url: 'http://localhost:9997/notes',
@@ -195,7 +196,13 @@ function newNote(text, newNote, differentColor, DynamicColor) {
 	    processData: false,
 	    cache: false,
 	    success: function (data) {
-	        
+            for(var key in data)
+            {
+                keyArray = key;
+            }
+            var array = data[keyArray];
+            newNoteObject["id"] = array.id;
+	        notesList.push(newNoteObject);
 	    },
 	    error: function (xhr) {
 	    }
@@ -237,6 +244,7 @@ function editText(event)
 	var table = document.getElementById("myTable");
 	var tableRow = table.rows.namedItem(id);
 	var tableRowNumber = tableRow.rowIndex;
+    console.log(tableRowNumber-1);
 	var note = notesList[tableRowNumber - 1];
 	var noteIDnumber = note.id;
 	var child5 = getNoteTextDivFromOuter(parent);
