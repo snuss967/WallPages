@@ -223,9 +223,18 @@ function convertEpochToDate(seconds)
 function getParentFromActionButton(event)
 {
 	var parent1 = event.parentNode;
+    console.log(parent1);
  	var parent2 = parent1.parentNode;
+    console.log(parent2);
  	var parent3 = parent2.parentNode;
  	return parent3;
+}
+
+function getNoteOuter(event)
+{
+    var parent1 = event.parentNode;
+    var parent2 = parent1.parentNode;
+    return parent2;
 }
 
 function getNoteTextDivFromOuter(parent3)
@@ -249,9 +258,159 @@ function editText(event)
 	var noteIDnumber = note.id;
 	var child5 = getNoteTextDivFromOuter(parent);
 	 var oldText = child5.innerHTML;
-	 var newText = prompt("Please Make Your Changes", oldText);
-	 child5.innerHTML = newText;
-	 note.message = newText;
+     var editTextOFormatting = prompt("Text, Formatting, Color Change, Background Color Change (Enter T/F/C/B)", oldText);
+     if (editTextOFormatting == "T" || editTextOFormatting == "t") {
+        var newText = prompt("Please Make Your Changes", oldText);
+     }
+     else if (editTextOFormatting == "F" || editTextOFormatting == "f") {
+        var input = prompt("Enter U (All Uppercase), L (All Lowercase), B (Bold), I (Italics), BL (Blink), F (Fixed), SU (sub), SUP (sup)")
+        var newText;
+        switch(input)
+        {
+            case "U":
+            case "u":
+                newText = oldText.toUpperCase();
+                break;
+            case "L":
+            case "l":
+                newText = oldText.toLowerCase();
+                break;
+            case "B":
+            case "b":
+                newText = oldText.bold();
+                break;
+            case "I":
+            case "i":
+                newText = oldText.italics();
+                break;
+            case "AN":
+            case "an":
+            case "An":
+            case "aN":
+                newText = anchor(oldText);
+                break;
+            case "F":
+            case "f":
+                newText = oldText.fixed();
+                break;
+            case "S":
+            case "s":
+                newText = oldText.strike();
+                break;
+            case "Su":
+            case "sU":
+            case "SU":
+            case "su":
+                newText = oldText.sub();
+                break;
+            case "SUP":
+            case "SUp":
+            case "SuP":
+            case "Sup":
+            case "sUP":
+            case "sUp":
+            case "sup":
+            case "suP":
+                newText = oldText.sup();
+                break;
+        }
+     }
+     else if(editTextOFormatting == "C" || editTextOFormatting == "c")
+     {
+        var color = prompt("Please Enter Text Color: Aqua, Azure, Blue, BlueViolet, DodgerBlue, ForestGreen, LawnGreen, Magenta, Red, Yellow, Orange, Pink, Navy, Lime", "Do Not Use Spaces");
+        var colorUp = color.toUpperCase();
+        var fontColorVar = color.toLowerCase();
+        switch(colorUp)
+        {
+            case "AQUA":
+                newText = oldText.fontcolor(fontColorVar);
+                break;
+            case "AZURE":
+                newText = oldText.fontcolor(fontColorVar);
+                break;
+            case "BLUE":
+                newText = oldText.fontcolor(fontColorVar);
+                break;
+            case "BLUEVIOLET":
+                newText = oldText.fontcolor(fontColorVar);
+                break;
+            case "DODGERBLUE":
+                newText = oldText.fontcolor(fontColorVar);
+                break;
+            case "FORESTGREEN":
+                newText = oldText.fontcolor(fontColorVar);
+                break;
+            case "LAWNGREEN":
+                newText = oldText.fontcolor(fontColorVar);
+                break;
+            case "MAGENTA":
+                newText = oldText.fontcolor(fontColorVar);
+                break;
+            case "RED":
+                newText = oldText.fontcolor(fontColorVar);
+                break;
+            case "YELLOW":
+                newText = oldText.fontcolor(fontColorVar);
+                break;
+            case "ORANGE":
+                newText = oldText.fontcolor(fontColorVar);
+                break;
+            case "PINK":
+                newText = oldText.fontcolor(fontColorVar);
+                break;
+            case "NAVY":
+                newText = oldText.fontcolor(fontColorVar);
+                break;
+            case "LIME":
+                newText = oldText.fontcolor(fontColorVar);
+                break;
+            default:
+                newText = oldText.fontcolor("azure");
+                break;
+        }
+     }
+     else if(editTextOFormatting == "B" || editTextOFormatting == "b")
+     {
+        var color = prompt("Please Enter Text Color: Yellow, LightOrange, Orange, Blue, Purple, Green, Red");
+        var colorUp = color.toUpperCase();
+        var fontColorVar = color.toLowerCase();
+        var noteToChange = getNoteOuter(event);
+        var colorID;
+        switch(colorUp)
+        {
+            case "YELLOW":
+                colorID = "color1";
+                break;
+            case "LIGHTORANGE":
+                colorID = "color2";
+                break;
+            case "ORANGE":
+                colorID = "color3";
+                break;
+            case "BLUE":
+                colorID = "color4";
+                break;
+            case "PURPLE":
+                colorID = "color5";
+                break;
+            case "GREEN":
+                colorID = "color6";
+                break;
+            case "RED":
+                colorID = "color7";
+                break;
+            default:
+                break;
+        }
+        noteToChange.id = colorID;
+        newText = oldText;
+     }
+     else
+     {
+        Alert("Incorrect Input]");
+     }
+     child5.innerHTML = newText;
+     note.message = newText;
      JSONstring = JSON.stringify(note); 
 	 //PUT Request with note
 	 $.ajax({
@@ -330,6 +489,9 @@ function deleteRow(event)
    
   <br><br> 
   <h1 id = "pagetitle" align="center">GABI'S WALL</h1> 
+<div class = "addNote"> 
+<a class="btn-floating btn-large waves-effect waves-light grey modal-trigger" href="#modal1"><i class="material-icons">add</i></a> 
+</div>
 <div class = "addNote"> 
 <a class="btn-floating btn-large waves-effect waves-light grey modal-trigger" href="#modal1"><i class="material-icons">add</i></a> 
 </div>
